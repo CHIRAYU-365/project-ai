@@ -612,19 +612,40 @@
       if (authMessage) authMessage.textContent = authIsSignup ? 'Creating account...' : 'Signing in...';
 
       try {
+        if (authMessage) authMessage.style.color = 'var(--ink-muted)';
         const res = authIsSignup
           ? await client.auth.signUp({ email, password })
           : await client.auth.signInWithPassword({ email, password });
 
         if (res.error) throw res.error;
 
-        const user = res.data.user || res.data.session?.user;
+        const session = res.data.session;
+        const user = res.data.user || session?.user;
+
+        if (authIsSignup && !session) {
+          // Supabase has email confirmation enabled
+          if (authMessage) {
+            authMessage.style.color = 'var(--saffron-main)';
+            authMessage.textContent = 'Account created! If email confirmation is enabled, check your inbox to confirm, or try logging in.';
+          }
+          showToast('Account created! Please verify your email.');
+          return;
+        }
+
         updateAuthButtonUI(user);
         window.WorkshopTracker?.trackAuthEvent(authIsSignup ? 'signup_success' : 'login_success', user);
-        showToast(authIsSignup ? 'Account created and verified!' : 'Logged in successfully!');
+        showToast(authIsSignup ? 'Welcome! Account created successfully.' : 'Welcome back! Logged in successfully.');
         hideAuthModal();
       } catch (err) {
-        if (authMessage) authMessage.textContent = err.message || 'Authentication failed.';
+        if (authMessage) {
+          authMessage.style.color = '#ef4444';
+          const msg = err.message || 'Authentication failed.';
+          if (msg.toLowerCase().includes('invalid login credentials')) {
+            authMessage.textContent = 'Invalid credentials. If you are new, click "Create an account" below.';
+          } else {
+            authMessage.textContent = msg;
+          }
+        }
       } finally {
         if (authSubmit) authSubmit.disabled = false;
       }
