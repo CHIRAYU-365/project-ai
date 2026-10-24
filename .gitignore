@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.env
+.vercel
+node_modules/
+venv/
+*.json
+!vercel.json
+!package.json

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}{{ workshop.title }} — WorkshopHub | The Modern Tech Atelier{% endblock %}
+{% block meta_description %}{{ workshop.description[:150] }}{% endblock %}
+
+{% block content %}
+<section class="detail-hero">
+  <div class="container">
+    <a href="/workshops" class="detail-back">
+      ← Back to Masterclasses
+    </a>
+
+    <div class="eyebrow"><span></span> {{ workshop.category }} · {{ workshop.level }} LEVEL</div>
+    <h1 style="font-size: clamp(38px, 5vw, 56px); margin: 12px 0 16px;">
+      {{ workshop.title }}<br>
+      <em>{{ workshop.subtitle }}</em>
+    </h1>
+    <p style="color: var(--ink-muted); font-size: 13.5px; max-width: 600px; line-height: 1.8;">
+      {{ workshop.description }}
+    </p>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container detail-grid">
+    <!-- Main Curriculum Content -->
+    <div class="detail-body">
+      <div style="border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 36px; border: 1px solid var(--border-line); height: 340px;">
+        <img src="{{ workshop.image }}" alt="{{ workshop.title }}" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+
+      <div class="eyebrow"><span></span> CURRICULUM OVERVIEW</div>
+      <h2 style="font-size: 30px; margin-bottom: 16px;">What you will build &amp; ship</h2>
+      <p style="color: var(--ink-muted); line-height: 1.85; margin-bottom: 24px;">
+        This {{ workshop.duration }} intensive masterclass is led by <strong>{{ workshop.instructor }}</strong>. 
+        You will participate in live pair-programming sessions, inspect real production repositories, and write testable, production-ready code.
+      </p>
+
+      <!-- Syllabus Modules -->
+      <div class="syllabus-list">
+        <div class="syllabus-item">
+          <h4>Module 01: Core Mental Models &amp; Architecture</h4>
+          <p>Deconstruct the underlying design patterns, performance bottlenecks, and real-world failure modes.</p>
+        </div>
+        <div class="syllabus-item">
+          <h4>Module 02: Hands-On Production Lab</h4>
+          <p>Live implementation exercise with real dataset and deployment pipelines on cloud infrastructure.</p>
+        </div>
+        <div class="syllabus-item">
+          <h4>Module 03: Code Review &amp; Architectural Q&amp;A</h4>
+          <p>Direct 1-on-1 code reviews, optimization critiques, and best practices from senior industry mentors.</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--border-line);">
+        <div class="eyebrow"><span></span> PREREQUISITES</div>
+        <p style="color: var(--ink-muted); line-height: 1.8; margin-top: 8px;">
+          {% if workshop.level == 'Beginner' %}
+            No prior advanced experience needed — just bring your laptop with a modern code editor (VS Code, Cursor, or Neovim).
+          {% elif workshop.level == 'Intermediate' %}
+            Familiarity with syntax and basic data structures. Git command-line knowledge is recommended.
+          {% else %}
+            Solid production programming background recommended. Familiarity with distributed systems or modern ML/cloud concepts.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- Sticky Sidebar Panel -->
+    <aside class="detail-card-panel">
+      <span class="food-badge" style="position:static;display:inline-block;margin-bottom:12px;">{{ workshop.badge }}</span>
+      <h3>Reserve Your Seat</h3>
+      
+      <div class="detail-row-item">
+        <span>Track Date</span>
+        <span>{{ workshop.date }}</span>
+      </div>
+      <div class="detail-row-item">
+        <span>Session Timing</span>
+        <span>{{ workshop.time }}</span>
+      </div>
+      <div class="detail-row-item">
+        <span>Total Duration</span>
+        <span>{{ workshop.duration }}</span>
+      </div>
+      <div class="detail-row-item">
+        <span>Instructor</span>
+        <span>{{ workshop.instructor }}</span>
+      </div>
+      <div class="detail-row-item">
+        <span>Tuition</span>
+        <span style="color:var(--saffron-main);font-weight:700;">100% Sponsored (Free)</span>
+      </div>
+
+      <!-- Capacity Meter -->
+      <div style="margin: 20px 0 24px;">
+        <div class="capacity-meta">
+          <span><strong>{{ workshop.enrolled }}/{{ workshop.capacity }}</strong> enrolled</span>
+          <span>{{ workshop.capacity - workshop.enrolled }} spots remaining</span>
+        </div>
+        <div class="capacity-track">
+          {% set pct = (workshop.enrolled / workshop.capacity * 100)|round|int %}
+          <div class="capacity-fill {% if pct >= 80 %}almost-full{% endif %}" style="width: {{ pct }}%;"></div>
+        </div>
+      </div>
+
+      <button class="button button-dark" style="width:100%;justify-content:center;" data-add="{{ workshop.id }}">
+        Add Track to Schedule <span>+</span>
+      </button>
+      <a href="/#reserve" class="button button-outline" style="width:100%;justify-content:center;margin-top:10px;">
+        Quick Reservation Form <span>↗</span>
+      </a>
+
+      <p class="demo-note" style="text-align:center;margin-top:16px;">
+        Instant confirmation · Calendar invite automatically synced.
+      </p>
+    </aside>
+  </div>
+</section>
+{% endblock %}

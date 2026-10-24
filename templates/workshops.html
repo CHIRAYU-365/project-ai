@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Our Tracks — WorkshopHub | The Modern Tech Atelier{% endblock %}
+{% block meta_description %}Explore our expert-led technical masterclasses in Python, AI/ML, Full-Stack, Cloud DevOps, Security, and Data Engineering.{% endblock %}
+{% block nav_workshops %}active{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <div class="eyebrow"><span></span> COMPLETE CURRICULUM</div>
+    <h1>Our Masterclasses<br><em>&amp; Technical Tracks.</em></h1>
+    <p>
+      Hands-on, project-based bootcamps for practitioners who want to build real systems.
+      Free to join. Limited cohort sizes for maximum code review and mentorship.
+    </p>
+
+    <div class="search-input-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="workshopSearchInput" placeholder="Search by language, track, or mentor..." aria-label="Search workshops">
+    </div>
+  </div>
+</section>
+
+<section class="section-pad" style="padding-top: 48px;">
+  <div class="container">
+    <!-- Filter Toolbar -->
+    <div class="menu-toolbar" style="margin-top: 0;">
+      <div class="filter-list" id="filters">
+        <button class="filter active" data-category="All">All Tracks <span>06</span></button>
+        <button class="filter" data-category="AI & ML">AI &amp; ML</button>
+        <button class="filter" data-category="Backend">Python &amp; Backend</button>
+        <button class="filter" data-category="Web Dev">Full-Stack Web</button>
+        <button class="filter" data-category="DevOps">Cloud &amp; DevOps</button>
+        <button class="filter" data-category="Security">Cybersecurity</button>
+        <button class="filter" data-category="Data">Data Pipelines</button>
+      </div>
+      <span class="menu-note">HANDS-ON &middot; 100% FREE &middot; REAL PROJECTS</span>
+    </div>
+
+    <!-- Workshop Grid -->
+    <div class="food-grid" id="foodGrid">
+      {% for ws in workshops %}
+      <article class="food-card" data-category="{{ ws.category }}" data-title="{{ ws.title|lower }}" data-desc="{{ ws.description|lower }}">
+        <div class="food-photo">
+          <img src="{{ ws.image }}" alt="{{ ws.title }}" loading="lazy">
+          <span class="food-badge">{{ ws.badge }}</span>
+          <button class="add-food" data-add="{{ ws.id }}" aria-label="Add {{ ws.title }} to schedule" title="Add to schedule">+</button>
+        </div>
+        <div class="food-info">
+          <div class="food-title-row">
+            <h3>{{ ws.title }}</h3>
+            <span class="food-price">{{ ws.price }}</span>
+          </div>
+          <p>{{ ws.description }}</p>
+          
+          <div class="capacity-row">
+            <div class="capacity-meta">
+              <span><strong>{{ ws.enrolled }}/{{ ws.capacity }}</strong> enrolled</span>
+              <span>{{ ws.capacity - ws.enrolled }} spots left</span>
+            </div>
+            <div class="capacity-track">
+              {% set pct = (ws.enrolled / ws.capacity * 100)|round|int %}
+              <div class="capacity-fill {% if pct >= 80 %}almost-full{% endif %}" style="width: {{ pct }}%;"></div>
+            </div>
+          </div>
+
+          <div class="food-footer-links">
+            <span>{{ ws.date }} · {{ ws.duration }}</span>
+            <a href="/workshop/{{ ws.id }}">Curriculum ↗</a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="menu-footer">
+      <span>Need customized cohort training for your engineering team?</span>
+      <a href="/#reserve" class="button button-outline">Contact the Atelier <span>↗</span></a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('workshopSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', e => {
+      const q = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.food-card').forEach(card => {
+        const title = card.dataset.title || '';
+        const desc  = card.dataset.desc || '';
+        const match = title.includes(q) || desc.includes(q);
+        card.style.display = match ? 'flex' : 'none';
+      });
+    });
+  }
+});
+</script>
+{% endblock %}

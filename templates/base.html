@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{% block meta_description %}WorkshopHub — Thoughtfully crafted, project-driven tech workshops in Python, AI/ML, Web Dev, Cloud, and Cybersecurity.{% endblock %}" />
+  <title>{% block title %}WorkshopHub | Code with craft. Build with soul & scale.{% endblock %}</title>
+
+  <!-- Typography: Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Top Announcement Strip -->
+  <div class="announcement">
+    <span class="live-dot"></span>
+    2026 Cohort Registrations Open.
+    <span>Limited to 30 engineers per track · 100% Free Sessions</span>
+  </div>
+
+  <!-- Sticky Site Header -->
+  <header class="site-header" id="navbar">
+    <div class="container header-inner">
+      <a class="brand" href="/" aria-label="WorkshopHub home">
+        <span class="brand-mark">⚡</span>
+        <span class="brand-text">WORKSHOP <i>&</i> HUB<small>THE MODERN TECH ATELIER</small></span>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <div class="mobile-nav-header">
+          <span class="eyebrow"><span></span> NAVIGATION</span>
+          <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+        </div>
+        <a href="/" class="{% block nav_home %}{% endblock %}"><span>Home</span> <i>↗</i></a>
+        <a href="/workshops" class="{% block nav_workshops %}{% endblock %}"><span>Our Tracks</span> <i>↗</i></a>
+        <a href="/#curriculum"><span>Curriculum</span> <i>↗</i></a>
+        <a href="/#community"><span>Campus</span> <i>↗</i></a>
+        <a href="/dashboard" id="navDashboard" class="{% block nav_dashboard %}{% endblock %}" style="display:none;"><span>Dashboard</span> <i>↗</i></a>
+        <div class="mobile-nav-actions">
+          <button class="nav-book" data-scroll="#reserve">Reserve a seat <span>↗</span></button>
+        </div>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Palette Catalogue Dropdown -->
+        <div class="palette-picker-wrap">
+          <button class="palette-btn" id="paletteBtn" aria-label="Open color palette selector" title="Color Palette Catalogue" aria-expanded="false">
+            <span class="palette-swatch-dot current-swatch" id="paletteCurrentDot"></span>
+            <span class="palette-btn-text">Palette</span>
+            <span class="palette-chevron">▾</span>
+          </button>
+          <div class="palette-dropdown" id="paletteDropdown" role="menu" aria-hidden="true">
+            <div class="palette-dropdown-head">COLOUR CATALOGUE</div>
+            <button class="palette-option active" data-theme="cashmere" role="menuitem">
+              <span class="swatch-pair" style="--c1:#faf8f5;--c2:#e2551a;"></span>
+              <div class="palette-opt-info">
+                <strong>Cashmere Atelier</strong>
+                <small>Ivory Parchment &amp; Saffron</small>
+              </div>
+            </button>
+            <button class="palette-option" data-theme="pine" role="menuitem">
+              <span class="swatch-pair" style="--c1:#0a4433;--c2:#10b981;"></span>
+              <div class="palette-opt-info">
+                <strong>Verdant Pine</strong>
+                <small>Highland Forest &amp; Sage</small>
+              </div>
+            </button>
+            <button class="palette-option" data-theme="dark" role="menuitem">
+              <span class="swatch-pair" style="--c1:#090d14;--c2:#fb923c;"></span>
+              <div class="palette-opt-info">
+                <strong>Obsidian Dark</strong>
+                <small>Midnight &amp; Neon Flame</small>
+              </div>
+            </button>
+            <button class="palette-option" data-theme="iris" role="menuitem">
+              <span class="swatch-pair" style="--c1:#0b0d19;--c2:#818cf8;"></span>
+              <div class="palette-opt-info">
+                <strong>Royal Iris</strong>
+                <small>Twilight &amp; Radiant Violet</small>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick 1-click Light/Dark Toggle -->
+        <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle dark/light theme" title="Quick Theme Toggle">
+          <span id="themeIcon">🌙</span>
+        </button>
+
+        <button class="auth-button" id="openAuth">Log in</button>
+        <button class="cart-button" id="openCart" aria-label="Open workshop schedule drawer">
+          <span class="cart-icon">⚡</span>
+          <span class="cart-btn-label">Schedule</span>
+          <span class="cart-badge-count" id="cartCount">0</span>
+        </button>
+
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content Container -->
+  <main class="page-wrapper">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Slide-over Workshop Schedule Drawer -->
+  <div class="cart-overlay" id="cartOverlay" aria-hidden="true">
+    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+      <div class="cart-head">
+        <div>
+          <span class="eyebrow"><span></span> SELECTED TRACKS</span>
+          <h2 id="cartTitle">Your schedule <em>of craft.</em></h2>
+        </div>
+        <button class="close-cart" id="closeCart" aria-label="Close schedule drawer">×</button>
+      </div>
+
+      <div class="cart-items" id="cartItems">
+        <div class="empty-cart">
+          Your schedule is looking empty.<br>
+          <span>Pick a workshop from the catalog to secure your seat.</span>
+        </div>
+      </div>
+
+      <div class="cart-bottom">
+        <div class="cart-total">
+          <span>Total Tuition</span>
+          <strong id="cartTotal">Free (Sponsored)</strong>
+        </div>
+        <p>Limited cohort seats. Certificates provided upon project submission.</p>
+        <button class="button button-dark checkout-button" id="checkoutButton">Confirm All Reservations <span>↗</span></button>
+        <small class="demo-note">Instant enrollment · Google Sheets &amp; calendar invite sync.</small>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Interactive Supabase Auth Modal -->
+  <div class="auth-overlay" id="authOverlay" aria-hidden="true">
+    <section class="auth-panel" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button class="auth-close" id="closeAuth" aria-label="Close login dialog">×</button>
+      <span class="eyebrow"><span></span> WELCOME TO WORKSHOP &amp; HUB</span>
+      <h2 id="authTitle">Your workstation, <em>your account.</em></h2>
+      <p id="authHint" style="color:var(--ink-muted);font-size:12px;">Sign in or create an account to manage your enrollments.</p>
+      
+      <form id="authForm">
+        <label for="authEmail">Email address</label>
+        <input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com">
+        
+        <label for="authPassword">Password</label>
+        <input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="At least 6 characters">
+        
+        <button class="button button-dark" id="authSubmit" type="submit">Log in ↗</button>
+        <button class="auth-switch" id="authMode" type="button">New here? Create an account</button>
+        <p id="authMessage" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Editorial Footer -->
+  <footer class="footer">
+    <div class="container">
+      <a class="brand footer-brand" href="/" aria-label="WorkshopHub home">
+        <span class="brand-mark">⚡</span>
+        <span>WORKSHOP <i>&</i> HUB<small>THE MODERN TECH ATELIER</small></span>
+      </a>
+      <p>Good code. Better systems. Great engineers happen here.</p>
+      
+      <div class="footer-links">
+        <a href="/workshops">Tracks &amp; Menu</a>
+        <a href="/#curriculum">Our Curriculum</a>
+        <a href="/#reserve">Reservations</a>
+        <a href="/#community">Hybrid Campus</a>
+        <a href="/dashboard">Student Dashboard</a>
+      </div>
+
+      <p class="form-note" style="max-width:540px;margin:20px auto 0;color:var(--ink-muted);">
+        Privacy note: WorkshopHub logs track views, curriculum filters, and seat reservations to synchronize with our academic cohort sheet. Passwords and credentials are fully secured via Supabase Auth.
+      </p>
+
+      <div class="footer-bottom">
+        <span>© <span id="year">2026</span> Workshop &amp; Hub. All rights reserved.</span>
+        <span>CRAFTED WITH PRECISION &amp; SOUL ⚡</span>
+        <a href="#">BACK TO TOP ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Environment Injection for Client SDKs -->
+  <script>
+    window.ENV = {
+      SUPABASE_URL: "{{ SUPABASE_URL }}",
+      SUPABASE_ANON_KEY: "{{ SUPABASE_ANON_KEY }}"
+    };
+  </script>
+
+  <!-- Scripts -->
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/app.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

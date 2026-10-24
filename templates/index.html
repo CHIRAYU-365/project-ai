@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}WorkshopHub | Code with craft. Build with soul & scale.{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" id="home">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <div class="eyebrow"><span></span> A MODERN TECH ATELIER</div>
+      <h1>Code with craft.<br><em>Build with soul &amp; scale.</em></h1>
+      <p>
+        Thoughtfully crafted tech workshops in Python, AI/ML, Full-Stack Web, Cloud DevOps, and Security.
+        Project-first, zero slide decks. Come curious, leave with production code.
+      </p>
+
+      <div class="hero-actions">
+        <a class="button button-dark" href="#workshops">Explore the curriculum <span>↗</span></a>
+        <button class="text-link" data-scroll="#reserve">Reserve your seat <span>→</span></button>
+      </div>
+
+      <div class="hero-meta">
+        <div class="avatars">
+          <span>A</span>
+          <span>R</span>
+          <span>P</span>
+        </div>
+        <div>
+          <strong>4.98/5 peer rating</strong>
+          <small>1,450+ engineers leveled up</small>
+        </div>
+        <div class="hero-line"></div>
+        <div>
+          <strong>Zero Fluff Guarantee</strong>
+          <small>Real systems shipped, always</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-art">
+      <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1100&q=85" alt="Clean modern developer workstation with terminal and code">
+      </div>
+      <div class="image-note">
+        <span class="note-star">⚡</span>
+        <span>THE ART OF<br><strong>CLEAN CODE</strong></span>
+      </div>
+      <div class="floating-tag">
+        <span>✦</span>
+        <div>
+          <strong>Craft, first.</strong>
+          <small>Always production ready</small>
+        </div>
+      </div>
+      <div class="hero-stamp">
+        BATCH<br><b>2026</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-bottom-ticker">
+    <div class="container hero-bottom">
+      <span>01 / A TASTE OF PRODUCTION</span>
+      <span>SCROLL TO DISCOVER ↓</span>
+      <span>GOOD CODE, GOOD SCALE</span>
+    </div>
+  </div>
+</section>
+
+<!-- Intro Strip -->
+<section class="intro-strip" id="curriculum">
+  <div class="container intro-inner">
+    <div class="strip-icon">⚡</div>
+    <p>Engineering rooted in production systems.<br><em>Built for scale.</em></p>
+    <div class="strip-divider"></div>
+    <p class="strip-small">
+      We bring the rigor and architectural practices of top engineering teams to an intensive masterclass format you'll actually love.
+    </p>
+    <a href="#workshops" class="round-arrow" aria-label="Discover our tracks">↗</a>
+  </div>
+</section>
+
+<!-- Workshop Catalog / Menu Section -->
+<section class="menu-section section-pad" id="workshops">
+  <div class="container">
+    <div class="section-heading">
+      <div>
+        <div class="eyebrow"><span></span> CURATED MASTERCLASSES</div>
+        <h2>Something for<br><em>every ambition.</em></h2>
+      </div>
+      <p>
+        Deep on architecture, generous with mentorship.<br>
+        Here are our flagship workshops open for November &amp; December 2026.
+      </p>
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="menu-toolbar">
+      <div class="filter-list" id="filters">
+        <button class="filter active" data-category="All">All Tracks <span>06</span></button>
+        <button class="filter" data-category="AI & ML">AI &amp; ML</button>
+        <button class="filter" data-category="Backend">Python &amp; Backend</button>
+        <button class="filter" data-category="Web Dev">Full-Stack Web</button>
+        <button class="filter" data-category="DevOps">Cloud &amp; DevOps</button>
+        <button class="filter" data-category="Security">Cybersecurity</button>
+        <button class="filter" data-category="Data">Data Pipelines</button>
+      </div>
+      <span class="menu-note">HANDS-ON &middot; 100% SPONSORED &middot; LIMITED SEATS</span>
+    </div>
+
+    <!-- Workshop Grid (Fluid Responsive) -->
+    <div class="food-grid" id="foodGrid">
+      {% for ws in workshops %}
+      <article class="food-card" data-category="{{ ws.category }}">
+        <div class="food-photo">
+          <img src="{{ ws.image }}" alt="{{ ws.title }}" loading="lazy">
+          <span class="food-badge">{{ ws.badge }}</span>
+          <button class="add-food" data-add="{{ ws.id }}" aria-label="Add {{ ws.title }} to schedule" title="Add to schedule">+</button>
+        </div>
+        <div class="food-info">
+          <div class="food-title-row">
+            <h3>{{ ws.title }}</h3>
+            <span class="food-price">{{ ws.price }}</span>
+          </div>
+          <p>{{ ws.description }}</p>
+          
+          <div class="capacity-row">
+            <div class="capacity-meta">
+              <span><strong>{{ ws.enrolled }}/{{ ws.capacity }}</strong> enrolled</span>
+              <span>{{ ws.capacity - ws.enrolled }} spots left</span>
+            </div>
+            <div class="capacity-track">
+              {% set pct = (ws.enrolled / ws.capacity * 100)|round|int %}
+              <div class="capacity-fill {% if pct >= 80 %}almost-full{% endif %}" style="width: {{ pct }}%;"></div>
+            </div>
+          </div>
+
+          <div class="food-footer-links">
+            <span>{{ ws.date }} · {{ ws.duration }}</span>
+            <a href="/workshop/{{ ws.id }}">Curriculum ↗</a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="menu-footer">
+      <span>Can’t decide which track? You can attend multiple sessions — all materials are recorded.</span>
+      <button class="button button-outline" data-scroll="#reserve">Reserve your seat <span>↗</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- Philosophy & Quote Section -->
+<section class="quote-section">
+  <div class="container quote-inner">
+    <div class="quote-mark">“</div>
+    <blockquote>
+      Good code is the beginning of<br>
+      <em>great stories &amp; scalable systems.</em>
+    </blockquote>
+    <p>Pull up an IDE. We saved you a seat at the table.</p>
+    <div class="quote-ornament">⚡ &nbsp; ⚡ &nbsp; ⚡</div>
+  </div>
+</section>
+
+<!-- Hybrid Campus & Community Section -->
+<section class="visit-section section-pad" id="community">
+  <div class="container visit-grid">
+    <div class="visit-photo">
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1100&q=85" alt="Engineers collaborating in a modern workshop space">
+      <div class="photo-caption">A PLACE TO BUILD TOGETHER <span>⚡</span></div>
+    </div>
+
+    <div class="visit-copy">
+      <div class="eyebrow"><span></span> YOUR WORKSTATION IS WAITING</div>
+      <h2>Come for the skills.<br><em>Stay for the network.</em></h2>
+      <p>
+        Whether you're breaking into AI, mastering Python metaclasses, or automating cloud infrastructure — there is always room at our workshop table.
+      </p>
+
+      <div class="detail-row">
+        <span class="detail-icon">⌖</span>
+        <div>
+          <strong>Hybrid Tech Atelier</strong>
+          <small>Live Interactive Streams &amp; Bangalore Engineering Hub</small>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-icon">◷</span>
+        <div>
+          <strong>Weekend Intensives</strong>
+          <small>Saturdays &amp; Sundays · 10:00 AM – 4:00 PM IST</small>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-icon">✦</span>
+        <div>
+          <strong>Community of 1,400+ Alumni</strong>
+          <small>Active private Discord, code reviews &amp; alumni hiring network</small>
+        </div>
+      </div>
+
+      <button class="button button-dark" data-scroll="#reserve">Reserve your seat <span>↗</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Reservation Section -->
+<section class="reservation-section" id="reserve">
+  <div class="container reservation-grid">
+    <div class="reservation-copy">
+      <div class="eyebrow"><span></span> GUARANTEE YOUR SPOT</div>
+      <h2>Let’s save you<br><em>a seat.</em></h2>
+      <p>
+        Tell us which track you're joining and your details.
+        We'll send your calendar invite, repository links, and preparation guide immediately.
+      </p>
+      <div class="reservation-aside">
+        “The best investment you can make as an engineer is the time spent building real systems.”
+      </div>
+    </div>
+
+    <form class="reservation-form" id="reservationForm">
+      <div class="form-top">
+        <strong>Reserve a seat</strong>
+        <span>IT ONLY TAKES 60 SECONDS</span>
+      </div>
+
+      <label for="guestName">Your full name</label>
+      <input id="guestName" name="guestName" type="text" placeholder="e.g. Aditi Sharma" required maxlength="80">
+
+      <div class="form-row">
+        <div>
+          <label for="guestEmail">Email address</label>
+          <input id="guestEmail" name="guestEmail" type="email" placeholder="you@example.com" required>
+        </div>
+        <div>
+          <label for="guestPhone">Phone or GitHub handle</label>
+          <input id="guestPhone" name="guestPhone" type="text" placeholder="@yourhandle or phone" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="workshopSelect">Preferred Workshop</label>
+          <select id="workshopSelect" name="workshop_id" required>
+            <option value="">Select a masterclass</option>
+            {% for ws in workshops %}
+            <option value="{{ ws.id }}">{{ ws.title }} ({{ ws.date }})</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label for="experienceLevel">Experience Level</label>
+          <select id="experienceLevel" name="experienceLevel">
+            <option value="Beginner">Beginner (1-2 years)</option>
+            <option value="Intermediate" selected>Intermediate (2-5 years)</option>
+            <option value="Advanced">Advanced (5+ years)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="button button-dark submit-button" type="submit">
+        Request Workshop Reservation <span>↗</span>
+      </button>
+
+      <p class="form-note">
+        100% Free educational initiative. If activity logging is enabled, selected track interactions and reservation submissions are recorded in our academic cohort sheet. Do not submit payment information.
+      </p>
+
+      <div class="form-message" id="formMessage" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+{% endblock %}

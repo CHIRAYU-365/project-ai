@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In — WorkshopHub | The Modern Tech Atelier{% endblock %}
+{% block meta_description %}Sign in or register your account to manage masterclass enrollments and access materials.{% endblock %}
+
+{% block content %}
+<section class="section-pad" style="display:flex;justify-content:center;align-items:center;min-height:75vh;">
+  <div class="auth-panel" style="position:static;box-shadow:var(--shadow-md);margin:0 auto;width:min(100%, 460px);">
+    <span class="eyebrow"><span></span> WORKSTATION ACCESS</span>
+    <h2 id="authPageTitle">Your workstation, <em>your account.</em></h2>
+    <p id="authPageHint" style="color:var(--muted);font-size:12px;margin-bottom:16px;">
+      Sign in or create an account to manage your enrollments and access private Discord community links.
+    </p>
+
+    <!-- Tab Switch -->
+    <div style="display:flex;border-bottom:1px solid var(--line);margin-bottom:20px;">
+      <button id="tabBtnLogin" class="filter active" style="flex:1;text-align:center;">Sign In</button>
+      <button id="tabBtnRegister" class="filter" style="flex:1;text-align:center;">Create Account</button>
+    </div>
+
+    <form id="authPageForm">
+      <div id="nameFieldGroup" style="display:none;">
+        <label for="authPageName">Full Name</label>
+        <input id="authPageName" type="text" placeholder="e.g. Aditi Sharma" autocomplete="name">
+      </div>
+
+      <label for="authPageEmail">Email address</label>
+      <input id="authPageEmail" type="email" autocomplete="email" required placeholder="you@example.com">
+
+      <label for="authPagePassword">Password</label>
+      <input id="authPagePassword" type="password" autocomplete="current-password" minlength="6" required placeholder="At least 6 characters">
+
+      <button class="button button-dark" id="authPageSubmit" type="submit" style="width:100%;margin-top:24px;justify-content:center;">
+        Sign In ↗
+      </button>
+
+      <div id="authPageMessage" role="status" aria-live="polite" style="margin-top:14px;font-size:12px;"></div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  let isSignup = false;
+  const tabLogin = document.getElementById('tabBtnLogin');
+  const tabRegister = document.getElementById('tabBtnRegister');
+  const nameGroup = document.getElementById('nameFieldGroup');
+  const title = document.getElementById('authPageTitle');
+  const submit = document.getElementById('authPageSubmit');
+  const form = document.getElementById('authPageForm');
+  const message = document.getElementById('authPageMessage');
+
+  function setMode(signup) {
+    isSignup = signup;
+    tabLogin.classList.toggle('active', !isSignup);
+    tabRegister.classList.toggle('active', isSignup);
+    nameGroup.style.display = isSignup ? 'block' : 'none';
+    title.innerHTML = isSignup ? 'Join our <em>atelier.</em>' : 'Your workstation, <em>your account.</em>';
+    submit.textContent = isSignup ? 'Create Account ↗' : 'Sign In ↗';
+    message.textContent = '';
+  }
+
+  tabLogin.addEventListener('click', () => setMode(false));
+  tabRegister.addEventListener('click', () => setMode(true));
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const client = window.WorkshopAuth?.getClient();
+    if (!client) {
+      message.textContent = 'Auth service initializing. Please try again.';
+      return;
+    }
+
+    const email = document.getElementById('authPageEmail').value.trim();
+    const password = document.getElementById('authPagePassword').value;
+    const name = document.getElementById('authPageName')?.value.trim();
+
+    submit.disabled = true;
+    message.textContent = isSignup ? 'Creating account...' : 'Signing in...';
+
+    try {
+      const res = isSignup
+        ? await client.auth.signUp({ email, password, options: { data: { full_name: name } } })
+        : await client.auth.signInWithPassword({ email, password });
+
+      if (res.error) throw res.error;
+
+      message.style.color = 'var(--green)';
+      message.textContent = isSignup ? 'Account created! Redirecting...' : 'Success! Redirecting...';
+      window.WorkshopTracker?.trackAuthEvent(isSignup ? 'signup_success' : 'login_success', res.data.user);
+      setTimeout(() => { window.location.href = '/dashboard'; }, 800);
+    } catch (err) {
+      message.style.color = 'var(--orange)';
+      message.textContent = err.message || 'Authentication failed.';
+    } finally {
+      submit.disabled = false;
+    }
+  });
+});
+</script>
+{% endblock %}
